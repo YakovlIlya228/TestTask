@@ -58,6 +58,4 @@ dependencies {
     implementation "androidx.room:room-ktx:2.2.5"
     implementation 'com.yalantis:phoenix:1.2.3'
 
-
-
 }

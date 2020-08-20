@@ -23,8 +23,6 @@ class GeneralViewModel: ViewModel() {
     fun getLiveDataProfiles(dao: DAO) = dao.getAllProfiles()
 
 
-//    fun getCachedProfiles(dao: DAO) = dao.getAllProfiles()
-
     fun insertProfile(dao: DAO,data: Data) = viewModelScope.launch {
         dao.insert(data)
     }

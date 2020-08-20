@@ -17,9 +17,6 @@ import com.example.testtask.Pojo.Data
 import com.example.testtask.R
 import com.example.testtask.ViewModel.GeneralViewModel
 import kotlinx.android.synthetic.main.fragment_detailed_edit.*
-import kotlinx.android.synthetic.main.fragment_detailed_view.*
-import kotlinx.android.synthetic.main.profile_item_layout.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 

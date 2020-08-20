@@ -7,7 +7,7 @@ import com.example.testtask.Pojo.Data
 @Dao
 interface DAO {
     @Query("SELECT * FROM profiles ORDER BY id ASC")
-    suspend fun getAllProfiles(): List<Data>
+    fun getAllProfiles(): LiveData<List<Data>>
     @Query("DELETE FROM profiles")
     suspend fun deleteAll()
     @Query("SELECT EXISTS(SELECT * FROM profiles WHERE id = :id)")

@@ -20,13 +20,10 @@ class GeneralViewModel: ViewModel() {
         emit(adapter.getProfiles(page))
     }
 
-    fun getLiveDataProfiles(dao: DAO): LiveData<List<Data>> = liveData{
-        emit(dao.getAllProfiles())
-    }
+    fun getLiveDataProfiles(dao: DAO) = dao.getAllProfiles()
 
-    suspend fun getCachedProfiles(dao: DAO): List<Data>{
-        return dao.getAllProfiles()
-    }
+
+//    fun getCachedProfiles(dao: DAO) = dao.getAllProfiles()
 
     fun insertProfile(dao: DAO,data: Data) = viewModelScope.launch {
         dao.insert(data)

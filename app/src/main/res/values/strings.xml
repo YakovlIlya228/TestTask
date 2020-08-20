@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TestTask</string>
+    <string name="saveBtn">Save</string>
+    <string name="sampleName">John</string>
+    <string name="sampleSurname">Smith</string>
+    <string name="sampleEmail">John.Smith@gmail.com</string>
+</resources>

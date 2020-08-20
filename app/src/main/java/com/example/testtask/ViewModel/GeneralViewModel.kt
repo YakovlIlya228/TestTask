@@ -1,17 +1,17 @@
 package com.example.testtask.ViewModel
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import com.example.testtask.Database.DAO
 import com.example.testtask.Network.CallAdapter
 import com.example.testtask.Network.RetrofitService
 import com.example.testtask.Pojo.Data
 import com.example.testtask.Pojo.Page
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
-class GeneralViewModel: ViewModel() {
+class GeneralViewModel : ViewModel() {
 
     val adapter: CallAdapter = RetrofitService.getRetrofit()
 
@@ -23,7 +23,7 @@ class GeneralViewModel: ViewModel() {
     fun getLiveDataProfiles(dao: DAO) = dao.getAllProfiles()
 
 
-    fun insertProfile(dao: DAO,data: Data) = viewModelScope.launch {
+    fun insertProfile(dao: DAO, data: Data) = viewModelScope.launch {
         dao.insert(data)
     }
 
@@ -31,18 +31,14 @@ class GeneralViewModel: ViewModel() {
         dao.deleteById(id)
     }
 
-    fun updateById(dao: DAO,id: Int,firstName: String, lastName: String, email: String) = viewModelScope.launch {
-        dao.updateById(id,firstName,lastName,email)
-    }
 
-    fun update(dao: DAO,profile: Data) = viewModelScope.launch{
+    fun update(dao: DAO, profile: Data) = viewModelScope.launch {
         dao.update(profile)
     }
 
     suspend fun checkExistence(dao: DAO, id: Int): Boolean {
         return dao.checkExistence(id)
     }
-
 
 
 }

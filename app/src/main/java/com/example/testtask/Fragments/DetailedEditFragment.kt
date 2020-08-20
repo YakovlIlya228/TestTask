@@ -1,13 +1,11 @@
 package com.example.testtask.Fragments
 
 import android.os.Bundle
-import android.provider.ContactsContract
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -41,11 +39,19 @@ class DetailedEditFragment : Fragment() {
             .into(profileImageEdit)
         profileImageEdit.clipToOutline = true
         save.setOnClickListener {
-            val profile = Data(bundle!!.getInt("ID"),firstNameEdit.text.toString(),lastNameEdit.text.toString(),emailEdit.text.toString(),bundle.getString("avatar")!!)
-            GlobalScope.launch{
-//                viewmodel.updateById(dao,bundle!!.getInt("ID"),firstNameEdit.text.toString(),lastNameEdit.text.toString(),emailEdit.text.toString())
-                sharedViewModel.update(dao,profile)
-                Log.d("ProfUpdate","Profile with Id:${profile.id},Name:${profile.firstName},Surname:${profile.last_name} has been updated!")
+            val profile = Data(
+                bundle!!.getInt("ID"),
+                firstNameEdit.text.toString(),
+                lastNameEdit.text.toString(),
+                emailEdit.text.toString(),
+                bundle.getString("avatar")!!
+            )
+            GlobalScope.launch {
+                sharedViewModel.update(dao, profile)
+                Log.d(
+                    "ProfUpdate",
+                    "Profile with Id:${profile.id},Name:${profile.firstName},Surname:${profile.last_name} has been updated!"
+                )
             }
             fragmentManager?.popBackStack()
         }
@@ -59,4 +65,4 @@ class DetailedEditFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_detailed_edit, container, false)
     }
 
-    }
+}

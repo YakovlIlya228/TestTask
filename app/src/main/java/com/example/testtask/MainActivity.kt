@@ -3,10 +3,10 @@ package com.example.testtask
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -22,23 +22,23 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlin.collections.ArrayList
 
-class MainActivity : AppCompatActivity(), ProfileListAdapter.ProfileListViewHolder.OnProfileListener{
+class MainActivity : AppCompatActivity(),
+    ProfileListAdapter.ProfileListViewHolder.OnProfileListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val page = 2
-        val profilesAdapter = ProfileListAdapter(this,this)
+        val profilesAdapter = ProfileListAdapter(this, this)
         profilesRecycler.layoutManager = LinearLayoutManager(this)
         val dao: DAO = ProfilesDatabase.getInstance(applicationContext).profileDao()
         profilesRecycler.adapter = profilesAdapter
         val viewModel = ViewModelProvider(this).get(GeneralViewModel::class.java)
         viewModel.getLiveDataProfiles(dao).observe(this, Observer {
-                it.let {
-                    profilesAdapter.updateList(it as ArrayList<Data>)
-                }
+            it.let {
+                profilesAdapter.updateList(it as ArrayList<Data>)
+            }
         })
         fun refresh() {
             viewModel.getProfiles(page).observeOnce(this, Observer {
@@ -48,32 +48,43 @@ class MainActivity : AppCompatActivity(), ProfileListAdapter.ProfileListViewHold
                     GlobalScope.launch(Dispatchers.IO) {
                         if (!viewModel.checkExistence(dao, profile.id)) {
                             viewModel.insertProfile(dao, profile)
-                            Log.i("UpdatingCache", "Profile with Id:${profile.id} has been inserted to database!")
+                            Log.i(
+                                "UpdatingCache",
+                                "Profile with Id:${profile.id} has been inserted to database!"
+                            )
                         }
                     }
                 }
 
             })
         }
-        if(isConnected(applicationContext) && savedInstanceState==null){
+        if (isConnected(applicationContext) && savedInstanceState == null) {
             refresh()
         }
         pullToRefresh.setOnRefreshListener {
-            if(isConnected(applicationContext))
+            if (isConnected(applicationContext))
                 refresh()
             else
-                Toast.makeText(this,"No connection to network. Try again later!",Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    "No connection to network. Try again later!",
+                    Toast.LENGTH_SHORT
+                ).show()
             pullToRefresh.setRefreshing(false)
         }
 
-         val swipeCallback = object: ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+        val swipeCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
                 TODO("Not yet implemented")
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val pos = viewHolder.adapterPosition
-                viewModel.deleteById(dao,profilesAdapter.profileList[pos].id)
+                viewModel.deleteById(dao, profilesAdapter.profileList[pos].id)
                 profilesAdapter.profileList.removeAt(pos)
                 profilesAdapter.notifyItemRemoved(pos)
             }
@@ -83,7 +94,7 @@ class MainActivity : AppCompatActivity(), ProfileListAdapter.ProfileListViewHold
 
     }
 
-    private fun isConnected(context: Context): Boolean{
+    private fun isConnected(context: Context): Boolean {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
         return activeNetwork?.isConnectedOrConnecting == true
@@ -92,15 +103,15 @@ class MainActivity : AppCompatActivity(), ProfileListAdapter.ProfileListViewHold
     override fun onProfileClick(holder: ProfileListAdapter.ProfileListViewHolder) {
         super.onProfileClick(holder)
         val bundle = Bundle()
-        bundle.putString("firstName",holder.firstName.text.toString())
-        bundle.putString("lastName",holder.lastName.text.toString())
-        bundle.putString("email",holder.email.text.toString())
-        bundle.putString("avatar",holder.avatarUrl)
-        bundle.putInt("ID",holder.id!!)
+        bundle.putString("firstName", holder.firstName.text.toString())
+        bundle.putString("lastName", holder.lastName.text.toString())
+        bundle.putString("email", holder.email.text.toString())
+        bundle.putString("avatar", holder.avatarUrl)
+        bundle.putInt("ID", holder.id!!)
         val transaction = supportFragmentManager.beginTransaction()
         val fragment = DetailedEditFragment()
         fragment.arguments = bundle
-        transaction.replace(R.id.main,fragment)
+        transaction.replace(R.id.main, fragment)
         supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         transaction.addToBackStack(null)
         transaction.commit()

@@ -15,6 +15,7 @@ class GeneralViewModel: ViewModel() {
 
     val adapter: CallAdapter = RetrofitService.getRetrofit()
 
+
     fun getProfiles(page: Int): LiveData<Page> = liveData {
         emit(adapter.getProfiles(page))
     }

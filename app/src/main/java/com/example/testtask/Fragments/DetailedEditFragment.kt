@@ -29,8 +29,11 @@ class DetailedEditFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val dao: DAO = ProfilesDatabase.getInstance(this.context!!).profileDao()
-        val viewmodel = ViewModelProvider(this).get(GeneralViewModel::class.java)
         val bundle = arguments
+        lateinit var sharedViewModel: GeneralViewModel
+        activity?.let {
+            sharedViewModel = ViewModelProvider(it).get(GeneralViewModel::class.java)
+        }
         firstNameEdit.setText(bundle?.getString("firstName"))
         lastNameEdit.setText(bundle?.getString("lastName"))
         emailEdit.setText(bundle?.getString("email"))
@@ -42,9 +45,9 @@ class DetailedEditFragment : Fragment() {
         profileImageEdit.clipToOutline = true
         save.setOnClickListener {
             val profile = Data(bundle!!.getInt("ID"),firstNameEdit.text.toString(),lastNameEdit.text.toString(),emailEdit.text.toString(),bundle.getString("avatar")!!)
-            GlobalScope.launch(Dispatchers.IO) {
+            GlobalScope.launch{
 //                viewmodel.updateById(dao,bundle!!.getInt("ID"),firstNameEdit.text.toString(),lastNameEdit.text.toString(),emailEdit.text.toString())
-                viewmodel.update(dao,profile)
+                sharedViewModel.update(dao,profile)
                 Log.d("ProfUpdate","Profile with Id:${profile.id},Name:${profile.firstName},Surname:${profile.last_name} has been updated!")
             }
             fragmentManager?.popBackStack()

@@ -6,6 +6,7 @@ import android.net.NetworkInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -15,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.testtask.Database.DAO
 import com.example.testtask.Database.ProfilesDatabase
 import com.example.testtask.Fragments.DetailedEditFragment
-import com.example.testtask.Fragments.DetailedViewFragment
 import com.example.testtask.Pojo.Data
 import com.example.testtask.ViewModel.GeneralViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -35,28 +35,20 @@ class MainActivity : AppCompatActivity(), ProfileListAdapter.ProfileListViewHold
         val dao: DAO = ProfilesDatabase.getInstance(applicationContext).profileDao()
         profilesRecycler.adapter = profilesAdapter
         val viewModel = ViewModelProvider(this).get(GeneralViewModel::class.java)
-  /*      GlobalScope.launch(Dispatchers.Default) {
-            profilesAdapter.updateList(viewModel.getCachedProfiles(dao) as ArrayList<Data>)
-            Log.i("LoadingCached", " ${profilesAdapter.itemCount} cached profiles have been loaded!")
-        } */
         viewModel.getLiveDataProfiles(dao).observe(this, Observer {
-                profilesAdapter.updateList(it as ArrayList<Data>)
+                it.let {
+                    profilesAdapter.updateList(it as ArrayList<Data>)
+                }
         })
         fun refresh() {
             viewModel.getProfiles(page).observeOnce(this, Observer {
                 profilesAdapter.updateList(it.dataList)
-                Log.i(
-                    "LoadingFromNetwork",
-                    "Fetched ${it.dataList.size} profiles from the network"
-                )
+                Log.i("LoadingFromNetwork", "Fetched ${it.dataList.size} profiles from the network")
                 for (profile in it.dataList) {
                     GlobalScope.launch(Dispatchers.IO) {
                         if (!viewModel.checkExistence(dao, profile.id)) {
                             viewModel.insertProfile(dao, profile)
-                            Log.i(
-                                "UpdatingCache",
-                                "Profile with Id:${profile.id} has been inserted to database!"
-                            )
+                            Log.i("UpdatingCache", "Profile with Id:${profile.id} has been inserted to database!")
                         }
                     }
                 }
@@ -67,16 +59,15 @@ class MainActivity : AppCompatActivity(), ProfileListAdapter.ProfileListViewHold
             refresh()
         }
         pullToRefresh.setOnRefreshListener {
-            refresh()
+            if(isConnected(applicationContext))
+                refresh()
+            else
+                Toast.makeText(this,"No connection to network. Try again later!",Toast.LENGTH_SHORT).show()
             pullToRefresh.setRefreshing(false)
         }
 
          val swipeCallback = object: ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
                 TODO("Not yet implemented")
             }
 
@@ -115,8 +106,4 @@ class MainActivity : AppCompatActivity(), ProfileListAdapter.ProfileListViewHold
         transaction.commit()
     }
 
-    override fun onResume() {
-        super.onResume()
-        Log.d("Resuming", "Activity has been resumed!")
-    }
 }

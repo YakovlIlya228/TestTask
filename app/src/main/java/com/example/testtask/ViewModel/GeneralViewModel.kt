@@ -5,15 +5,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.example.testtask.Database.DAO
-import com.example.testtask.Network.CallAdapter
+import com.example.testtask.Network.ProfileService
 import com.example.testtask.Pojo.Data
 import com.example.testtask.Pojo.Page
 import kotlinx.coroutines.launch
 
-class GeneralViewModel(val callAdapter: CallAdapter,val dao: DAO) : ViewModel() {
+class GeneralViewModel(val profileService: ProfileService, val dao: DAO) : ViewModel() {
 
     fun getProfiles(page: Int): LiveData<Page> = liveData {
-        emit(callAdapter.getProfiles(page))
+        emit(profileService.getProfiles(page))
     }
 
     fun getLiveDataProfiles() = dao.getAllProfiles()

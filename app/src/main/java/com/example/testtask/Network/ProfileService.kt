@@ -5,7 +5,7 @@ import com.example.testtask.Pojo.Page
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface CallAdapter {
+interface ProfileService {
     @GET("/api/users")
     suspend fun getProfiles(@Query("page")page: Int): Page
 }

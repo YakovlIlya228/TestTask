@@ -19,7 +19,7 @@ import org.koin.android.viewmodel.ext.android.sharedViewModel
 
 class DetailedEditFragment : Fragment() {
 
-    val sharedViewModel: GeneralViewModel by sharedViewModel()
+    private val sharedViewModel: GeneralViewModel by sharedViewModel()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

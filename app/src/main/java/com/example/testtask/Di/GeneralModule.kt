@@ -7,6 +7,6 @@ import retrofit2.CallAdapter
 import retrofit2.Retrofit
 
 val generalModel = module {
-    viewModel { GeneralViewModel(get() ,get()) }
+    viewModel { GeneralViewModel(get(), get()) }
     single { get<Retrofit>().create(CallAdapter::class.java) }
 }

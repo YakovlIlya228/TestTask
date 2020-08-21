@@ -10,7 +10,7 @@ import com.example.testtask.Pojo.Data
 import com.example.testtask.Pojo.Page
 import kotlinx.coroutines.launch
 
-class GeneralViewModel(private val callAdapter: CallAdapter, private val dao: DAO) : ViewModel() {
+class GeneralViewModel(val callAdapter: CallAdapter,val dao: DAO) : ViewModel() {
 
     fun getProfiles(page: Int): LiveData<Page> = liveData {
         emit(callAdapter.getProfiles(page))

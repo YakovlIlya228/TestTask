@@ -9,12 +9,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.testtask.Database.DAO
-import com.example.testtask.Database.ProfilesDatabase
 import com.example.testtask.Fragments.DetailedEditFragment
 import com.example.testtask.Pojo.Data
 import com.example.testtask.ViewModel.GeneralViewModel
@@ -22,9 +19,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity(),
     ProfileListAdapter.ProfileListViewHolder.OnProfileListener {
+
+    val viewModel: GeneralViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,22 +32,18 @@ class MainActivity : AppCompatActivity(),
         val page = 2
         val profilesAdapter = ProfileListAdapter(this, this)
         profilesRecycler.layoutManager = LinearLayoutManager(this)
-        val dao: DAO = ProfilesDatabase.getInstance(applicationContext).profileDao()
         profilesRecycler.adapter = profilesAdapter
-        val viewModel = ViewModelProvider(this).get(GeneralViewModel::class.java)
-        viewModel.getLiveDataProfiles(dao).observe(this, Observer {
-            it.let {
+        viewModel.getLiveDataProfiles().observe(this, Observer {
                 profilesAdapter.updateList(it as ArrayList<Data>)
-            }
         })
         fun refresh() {
-            viewModel.getProfiles(page).observeOnce(this, Observer {
+            viewModel.getProfiles(page).observe(this, Observer {
                 profilesAdapter.updateList(it.dataList)
                 Log.i("LoadingFromNetwork", "Fetched ${it.dataList.size} profiles from the network")
                 for (profile in it.dataList) {
                     GlobalScope.launch(Dispatchers.IO) {
-                        if (!viewModel.checkExistence(dao, profile.id)) {
-                            viewModel.insertProfile(dao, profile)
+                        if (!viewModel.checkExistence(profile.id)) {
+                            viewModel.insertProfile(profile)
                             Log.i(
                                 "UpdatingCache",
                                 "Profile with Id:${profile.id} has been inserted to database!"
@@ -84,7 +80,7 @@ class MainActivity : AppCompatActivity(),
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val pos = viewHolder.adapterPosition
-                viewModel.deleteById(dao, profilesAdapter.profileList[pos].id)
+                viewModel.deleteById(profilesAdapter.profileList[pos].id)
                 profilesAdapter.profileList.removeAt(pos)
                 profilesAdapter.notifyItemRemoved(pos)
             }

@@ -6,37 +6,32 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.example.testtask.Database.DAO
 import com.example.testtask.Network.CallAdapter
-import com.example.testtask.Network.RetrofitService
 import com.example.testtask.Pojo.Data
 import com.example.testtask.Pojo.Page
 import kotlinx.coroutines.launch
 
-class GeneralViewModel : ViewModel() {
-
-    val adapter: CallAdapter = RetrofitService.getRetrofit()
-
+class GeneralViewModel(private val callAdapter: CallAdapter, private val dao: DAO) : ViewModel() {
 
     fun getProfiles(page: Int): LiveData<Page> = liveData {
-        emit(adapter.getProfiles(page))
+        emit(callAdapter.getProfiles(page))
     }
 
-    fun getLiveDataProfiles(dao: DAO) = dao.getAllProfiles()
+    fun getLiveDataProfiles() = dao.getAllProfiles()
 
-
-    fun insertProfile(dao: DAO, data: Data) = viewModelScope.launch {
+    fun insertProfile(data: Data) = viewModelScope.launch {
         dao.insert(data)
     }
 
-    fun deleteById(dao: DAO, id: Int) = viewModelScope.launch {
+    fun deleteById(id: Int) = viewModelScope.launch {
         dao.deleteById(id)
     }
 
 
-    fun update(dao: DAO, profile: Data) = viewModelScope.launch {
+    fun update(profile: Data) = viewModelScope.launch {
         dao.update(profile)
     }
 
-    suspend fun checkExistence(dao: DAO, id: Int): Boolean {
+    suspend fun checkExistence(id: Int): Boolean {
         return dao.checkExistence(id)
     }
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TestTask</string>
+    <string name="app_name">MapTask</string>
     <string name="saveBtn">Save</string>
     <string name="sampleName">John</string>
     <string name="sampleSurname">Smith</string>

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/activityBack"
     android:id="@+id/main"
-    tools:context=".MainActivity">
+    tools:context=".Activites.MainActivity">
 
     <com.yalantis.phoenix.PullToRefreshView
         android:id="@+id/pullToRefresh"

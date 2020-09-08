@@ -4,4 +4,5 @@
     <string name="sampleName">John</string>
     <string name="sampleSurname">Smith</string>
     <string name="sampleEmail">John.Smith@gmail.com</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

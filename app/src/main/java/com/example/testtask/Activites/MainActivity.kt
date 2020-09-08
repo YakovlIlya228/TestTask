@@ -1,4 +1,4 @@
-package com.example.testtask
+package com.example.testtask.Activites
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -14,12 +14,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.testtask.Fragments.DetailedEditFragment
 import com.example.testtask.Pojo.Data
+import com.example.testtask.ProfileListAdapter
+import com.example.testtask.R
 import com.example.testtask.ViewModel.GeneralViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.get
 import org.koin.android.viewmodel.ext.android.viewModel
 
 
@@ -36,7 +37,7 @@ class MainActivity : AppCompatActivity(),
         profilesRecycler.layoutManager = LinearLayoutManager(this)
         profilesRecycler.adapter = profilesAdapter
         viewModel.getLiveDataProfiles().observe(this, Observer {
-                profilesAdapter.updateList(it as ArrayList<Data>)
+            profilesAdapter.updateList(it as ArrayList<Data>)
         })
         fun refresh() {
             viewModel.getProfiles(page).observe(this, Observer {

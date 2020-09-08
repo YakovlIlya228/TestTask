@@ -12,7 +12,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-
+    testOptions {
+        unitTests.includeAndroidResources true
+    }
     defaultConfig {
         applicationId "com.example.testtask"
         minSdkVersion 23
@@ -26,6 +28,7 @@ android {
     buildTypes {
         debug{
             buildConfigField "String", 'BASE_URL', '"https://reqres.in"'
+            buildConfigField "String", 'USERS_BASE_URL', '"https://jsonplaceholder.typicode.com"'
         }
         release {
             minifyEnabled false
@@ -38,12 +41,15 @@ apply plugin: "kotlin-kapt"
 
 
 dependencies {
-    def koin_version = "2.1.0"
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    def koin_version = "2.1.5"
     def room_ver = "2.2.5"
     def retrofit_ver = "2.9.0"
     def glide_ver = "4.11.0"
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    testImplementation('junit:junit:4.13')
+    testImplementation 'org.hamcrest:hamcrest:2.2'
     implementation 'androidx.core:core-ktx:1.3.1'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
@@ -52,6 +58,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation "com.google.android.gms:play-services-location:17.0.0"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_ver"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_ver"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8'
@@ -62,10 +69,10 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation "androidx.room:room-runtime:$room_ver"
     kapt "androidx.room:room-compiler:$room_ver"
+    testImplementation "org.mockito:mockito-core:3.5.9"
     implementation "androidx.room:room-ktx:$room_ver"
     implementation 'com.yalantis:phoenix:1.2.3'
-//    implementation "org.koin:koin-core:$koin_version"
-//    implementation "org.koin:koin-core-ext:$koin_version"
+    testImplementation("org.koin:koin-test:$koin_version")
     implementation "org.koin:koin-android:$koin_version"
     implementation "org.koin:koin-android-viewmodel:$koin_version"
 
